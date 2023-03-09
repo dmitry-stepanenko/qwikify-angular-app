@@ -22,6 +22,7 @@ export default component$(() => {
       <body lang="en">
         <RouterOutlet />
         <ServiceWorkerRegister />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.13.0/zone.min.js" integrity="sha512-0gktTPHeGte5sHPxemxBuJwp5ZPhrVk7cOkg8YuuEZ3Kv51WygdIdlK+belGsWs0DdUXkOEmstrCHHrCDDGctw==" crossOrigin="anonymous" referrerPolicy="no-referrer"></script>
       </body>
     </QwikCityProvider>
   );
