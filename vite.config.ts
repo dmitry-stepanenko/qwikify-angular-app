@@ -2,8 +2,7 @@ import { defineConfig } from 'vite';
 import { qwikVite } from '@builder.io/qwik/optimizer';
 import { qwikCity } from '@builder.io/qwik-city/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import {angular} from './src/angular-int/angular-vite-plugin'
-import { createCompilerPlugin } from './src/angular-int/compiler-plugin'
+import {angular} from './src/angular-int/analog/angular-vite-plugin'
 
 export default defineConfig(() => {
   return {
@@ -13,19 +12,6 @@ export default defineConfig(() => {
         'Cache-Control': 'public, max-age=600',
       },
     },
-    // optimizeDeps: {
-    //   include: ['@whoho/mylib', '@angular/core', '@angular/platform-browser', 'rxjs/operators', 'rxjs'],
-    //   esbuildOptions: {
-    //     plugins: [
-    //       createCompilerPlugin({tsconfig: './tsconfig.json', sourcemap: false})
-    //     ],
-    //     define: {
-    //       ngDevMode: 'false',
-    //       ngJitMode: 'false',
-    //       ngI18nClosureMode: 'false',
-    //     },
-    //   },
-    // },
     resolve: {
       conditions: ['style'],
     },

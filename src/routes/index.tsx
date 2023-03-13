@@ -1,10 +1,18 @@
-import { $, component$ } from "@builder.io/qwik";
+/* eslint-disable */
+
+import { $, component$, useOnDocument, useSignal } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
-import { StandaloneComponent, Standalone2Component } from "@whoho/mylib";
-import { _render } from "~/angular-int/client";
+import { Standalone2Qwikified, StandaloneQwikified } from "~/angular/components";
 
 export default component$(() => {
+
+    const contentOptionSig = useSignal<'one' | 'two'>('one');
+
+    useOnDocument("hello", $((data) => {
+        console.log('HELLO EMITTED', {data});
+    }));
+
     return (
         <div>
             <h1>
@@ -12,7 +20,14 @@ export default component$(() => {
             </h1>
 
             <div style="background-color: lightsteelblue">
-                <app-standalone1></app-standalone1>
+            <StandaloneQwikified client:hover contentOption={contentOptionSig.value} hello={$(() => console.log('hello handler'))}>
+                <div id="meow">I am projected</div>
+            </StandaloneQwikified>
+            {/* <br />
+            <Standalone2Qwikified client:only/>
+            <br />
+            <StandaloneQwikified client:only/> */}
+                {/* <app-standalone1></app-standalone1>
                 <br />
                 <app-standalone2></app-standalone2>
                 <br />
@@ -21,8 +36,12 @@ export default component$(() => {
                 </button>
                 <button onClick$={$(() => _render(document.querySelector("app-standalone2")!, Standalone2Component))}>
                     render standalone2
-                </button>
+                </button> */}
             </div>
+
+            <button onClick$={$(() => {
+                contentOptionSig.value = contentOptionSig.value === 'two' ? 'one' : 'two';
+            })}>Wake up by update of the bound data: "{contentOptionSig.value}"</button>
 
             <Link class="mindblow" href="/flower/">
                 Blow my mind 🤯
