@@ -1,4 +1,4 @@
-import { $, Signal, useOn, useOnDocument, useSignal } from '@builder.io/qwik';
+import { $, useOn, useOnDocument, useSignal } from '@builder.io/qwik';
 import { isServer } from '@builder.io/qwik/build';
 // import { Component, createContext, createElement, createRef } from 'react';
 import type { QwikifyOptions, QwikifyProps } from './types';

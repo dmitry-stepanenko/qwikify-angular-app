@@ -1,7 +1,5 @@
 import 'zone.js/bundles/zone-node.umd.js';
 import { type QRL, type Signal, SSRRaw, Slot } from "@builder.io/qwik";
-// import { getHostProps, mainExactProps, getReactProps } from "./slot";
-// import { renderToString } from "react-dom/server";
 import { isServer } from "@builder.io/qwik/build";
 import {
     reflectComponentType,
@@ -10,8 +8,31 @@ import {
     type ComponentMirror,
     InjectionToken,
     type Provider,
+    ɵRender3ComponentFactory,
+    type Injector,
+    type Type,
 } from "@angular/core";
 import { BEFORE_APP_SERIALIZED, renderApplication } from "@angular/platform-server";
+import { DOCUMENT } from '@angular/common';
+
+const SLOT_MARK = 'SLOT';
+const SLOT_COMMENT = `<!--${SLOT_MARK}-->`
+
+const projectableNodesMap = new Set<Type<unknown>>()
+const create = ɵRender3ComponentFactory.prototype.create;
+ɵRender3ComponentFactory.prototype.create = function (
+    injector: Injector,
+    projectableNodes?: any[][],
+    rootSelectorOrNode?: any,
+    environmentInjector?: any
+) {
+    if (projectableNodesMap.has(this.componentType)) {
+      const document_local: typeof document = this["ngModule"].injector.get(DOCUMENT);
+      const slotComment = document_local.createComment(SLOT_MARK)
+      projectableNodes = [[slotComment]]; // TODO: support multiple ng-content 
+    }
+    return create.call(this, injector, projectableNodes, rootSelectorOrNode, environmentInjector);
+};
 
 const QWIK_ANGULAR_STATIC_PROPS = new InjectionToken<{
   props: Record<string, unknown>;
@@ -70,6 +91,11 @@ export async function renderFromServer(
     if (isServer) {
       const component = await angularCmp$.resolve();
         const mirror = reflectComponentType(component);
+        
+        if (mirror?.ngContentSelectors.length) {
+          projectableNodesMap.add(component);
+        }
+
         const appId = mirror?.selector || component.name.toString().toLowerCase();
         const document = `<${appId}></${appId}>`;
 
@@ -84,7 +110,21 @@ export async function renderFromServer(
               STATIC_PROPS_HOOK_PROVIDER,
             ],
         });
+        const index = html.indexOf(SLOT_COMMENT);
 
+        if (index > 0) {
+          const part1 = html.slice(0, index);
+          const part2 = html.slice(index + SLOT_COMMENT.length);
+          return (
+            <Host ref={hostRef}>
+              <SSRRaw data={part1}></SSRRaw>
+              <q-slot projected ref={slotRef}>
+                <Slot />
+              </q-slot>
+              <SSRRaw data={part2}></SSRRaw>
+            </Host>
+        );
+        }
     return (
         <>
             <Host ref={hostRef}>

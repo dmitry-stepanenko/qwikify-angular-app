@@ -82,8 +82,12 @@ export class ClientRenderer {
             if (this.knownInputs.has(key)) {
                 this.componentRef.setInput(key, value);
             }
-            if (this.knownOutputs.has(key) && typeof value === 'function') {
-                this.outputHandlers.set(key, value);
+            if (this.knownOutputs.has(key)) {
+                if (typeof value === 'function') {
+                    this.outputHandlers.set(key, value);
+                } else {
+                    console.warn(`"${key}" param expects a callback function, got "${typeof value}" instead.`)
+                }
             }
         }
         

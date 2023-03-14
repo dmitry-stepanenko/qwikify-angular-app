@@ -3,7 +3,7 @@
 import { $, component$, useOnDocument, useSignal } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
-import { Standalone2Qwikified, StandaloneQwikified } from "~/angular/components";
+import { StandaloneQwikified } from "~/angular/components";
 
 export default component$(() => {
 
@@ -20,8 +20,8 @@ export default component$(() => {
             </h1>
 
             <div style="background-color: lightsteelblue">
-            <StandaloneQwikified client:hover contentOption={contentOptionSig.value} hello={$(() => console.log('hello handler'))}>
-                <div id="meow">I am projected</div>
+            <StandaloneQwikified contentOption={contentOptionSig.value} hello={$(() => console.log('hello handler'))}>
+                <div id="meow">I am projected {contentOptionSig.value}</div>
             </StandaloneQwikified>
             {/* <br />
             <Standalone2Qwikified client:only/>

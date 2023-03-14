@@ -9,6 +9,12 @@ import * as ts from 'typescript';
 import { ModuleNode, Plugin, PluginContainer, ViteDevServer } from 'vite';
 import { loadEsmModule } from '@angular-devkit/build-angular/src/utils/load-esm';
 import { createCompilerPlugin } from './compiler-plugin';
+// import {
+//   hasStyleUrls,
+//   hasTemplateUrl,
+//   resolveStyleUrls,
+//   resolveTemplateUrls,
+// } from './component-resolvers';
 // import { augmentHostWithResources } from './host';
 
 export interface PluginOptions {
@@ -84,7 +90,7 @@ export function angular(options?: PluginOptions): Plugin[] {
   let watchMode = false;
   const sourceFileCache = new SourceFileCache();
   const isProd = process.env['NODE_ENV'] === 'production';
-  // const isTest = process.env['NODE_ENV'] === 'test' || !!process.env['VITEST'];
+  const isTest = process.env['NODE_ENV'] === 'test' || !!process.env['VITEST'];
   let viteServer: ViteDevServer | undefined;
   let cssPlugin: Plugin | undefined;
 
@@ -93,9 +99,9 @@ export function angular(options?: PluginOptions): Plugin[] {
       name: '@analogjs/vite-plugin-angular',
       async config(config, { command }) {
         watchMode = command === 'serve';
-        // const target = Array.isArray(config.build?.target)
-        //   ? (config.build?.target as string[])
-        //   : [config.build?.target || 'es2020'];
+        const target = Array.isArray(config.build?.target)
+          ? (config.build?.target as string[])
+          : [config.build?.target || 'es2020'];
 
         compilerCli = await loadEsmModule<
           typeof import('@angular/compiler-cli')
@@ -177,6 +183,108 @@ export function angular(options?: PluginOptions): Plugin[] {
 
         return ctx.modules;
       },
+    //   async transform(code, id) {
+    //     // Skip transforming node_modules
+    //     if (id.includes('node_modules')) {
+    //       return;
+    //     }
+
+    //     /**
+    //      * Check for .ts extenstions for inline script files being
+    //      * transformed (Astro).
+    //      *
+    //      * Example ID:
+    //      *
+    //      * /src/pages/index.astro?astro&type=script&index=0&lang.ts
+    //      */
+    //     if (id.includes('type=script')) {
+    //       return;
+    //     }
+
+    //     if (TS_EXT_REGEX.test(id)) {
+    //       if (id.includes('.ts?')) {
+    //         // Strip the query string off the ID
+    //         // in case of a dynamically loaded file
+    //         id = id.replace(/\?(.*)/, '');
+    //       }
+
+    //       /**
+    //        * Re-analyze on each transform
+    //        * for test(Vitest)
+    //        */
+    //       if (isTest) {
+    //         const tsMod = viteServer?.moduleGraph.getModuleById(id);
+    //         if (tsMod) {
+    //           sourceFileCache.invalidate(id);
+    //           await buildAndAnalyze();
+    //         }
+    //       }
+
+    //       if (watchMode) {
+    //         if (hasTemplateUrl(code)) {
+    //           const templateUrls = resolveTemplateUrls(code, id);
+
+    //           templateUrls.forEach((templateUrl) => {
+    //             this.addWatchFile(templateUrl);
+    //           });
+    //         }
+
+    //         if (hasStyleUrls(code)) {
+    //           const styleUrls = resolveStyleUrls(code, id);
+
+    //           styleUrls.forEach((styleUrl) => {
+    //             this.addWatchFile(styleUrl);
+    //           });
+    //         }
+    //       }
+
+    //       const typescriptResult = await fileEmitter!(id);
+
+    //       // return fileEmitter
+    //       const data = typescriptResult?.content ?? '';
+    //       const forceAsyncTransformation =
+    //         /for\s+await\s*\(|async\s+function\s*\*/.test(data);
+    //       const useInputSourcemap = (!isProd ? undefined : false) as undefined;
+
+    //       if (!forceAsyncTransformation && !isProd) {
+    //         return {
+    //           code: isProd
+    //             ? data.replace(/^\/\/# sourceMappingURL=[^\r\n]*/gm, '')
+    //             : data,
+    //         };
+    //       }
+
+    //       const babelResult = await transformAsync(data, {
+    //         filename: id,
+    //         inputSourceMap: (useInputSourcemap
+    //           ? undefined
+    //           : false) as undefined,
+    //         sourceMaps: !isProd ? 'inline' : false,
+    //         compact: false,
+    //         configFile: false,
+    //         babelrc: false,
+    //         browserslistConfigFile: false,
+    //         plugins: [],
+    //         presets: [
+    //           [
+    //             angularApplicationPreset,
+    //             {
+    //               supportedBrowsers: pluginOptions.supportedBrowsers,
+    //               forceAsyncTransformation,
+    //               optimize: isProd && {},
+    //             },
+    //           ],
+    //         ],
+    //       });
+
+    //       return {
+    //         code: babelResult?.code ?? '',
+    //         map: babelResult?.map,
+    //       };
+    //     }
+
+    //     return undefined;
+    //   },
     },
     {
       name: '@analogjs/vite-plugin-angular-optimizer',

@@ -1,10 +1,9 @@
 Stage 1 (pre-compiled components)
-- content projection
+- SSR content projection (client side works)
 - Angular is running in development mode. Call enableProdMode() to enable production mode.
-- respect all rendering modes
 - verify different style encapsulation
 - if some packages are not installed, there will be an error, that is hard to understand
-- zone.js attached twice (client and ssr)?
+- Verify zone.js is attached correctly (now it's done twice on client and server)
 
 Stage 2 (defined components within the qwik app)
 - analog angular and qwikVite plugin conflicts
@@ -12,4 +11,4 @@ Stage 2 (defined components within the qwik app)
 Other:
 - no event after navigating to another page and back? (qwik issue)
 - is it ok to attach zone.js globally? 
-- EventEmitter: CustomEvent vs functional handlers?
+- EventEmitter: CustomEvent vs functional handlers approach? both supported now, leave one)

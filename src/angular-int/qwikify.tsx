@@ -24,7 +24,7 @@ export function qwikifyQrl<PROPS extends {}>(
     
 ) {
     return component$<QwikifyProps<PROPS>>((props) => {
-        useStylesScoped$( `q-slot{display:none}` ); 
+        useStylesScoped$( `q-slot:not([projected]){display:none}` ); 
         const hostRef = useSignal<Element>();
         const slotRef = useSignal<Element>();
         const internalState = useSignal<NoSerialize<Internal>>();
@@ -42,6 +42,7 @@ export function qwikifyQrl<PROPS extends {}>(
             if (!isBrowser) {
                 return;
             }
+            console.log({slotRef: slotRef.value, hostRef: hostRef.value});
 
             // Update
             if (internalState.value) {
@@ -76,13 +77,16 @@ export function qwikifyQrl<PROPS extends {}>(
             <RenderOnce>
                 <TagName
                     {...getHostProps(props)}
-                    ref={async (el: Element) => {
+                    ref={(el: Element) => {
+                      queueMicrotask(async () => {
+                        // queueMicrotask is needed in order to have "slotRef" defined
                         hostRef.value = el;
                         if (isBrowser && internalState.value) {
                           internalState.value.renderer && 
                           await internalState.value.renderer.render(el, slotRef.value, props);
                         }
-                      }}
+                      })
+                    }}
                 >
                 </TagName>
                 <q-slot ref={slotRef}>

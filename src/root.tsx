@@ -1,6 +1,5 @@
-import { component$, useVisibleTask$ } from '@builder.io/qwik';
+import { component$ } from '@builder.io/qwik';
 import { QwikCityProvider, RouterOutlet, ServiceWorkerRegister } from '@builder.io/qwik-city';
-import { isBrowser } from '@builder.io/qwik/build';
 import { RouterHead } from './components/router-head/router-head';
 
 import './global.css';
