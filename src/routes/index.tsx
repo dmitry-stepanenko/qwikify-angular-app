@@ -1,38 +1,13 @@
 /* eslint-disable */
 
-import { Component } from "@angular/core";
-import { $, component$, useOnDocument, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
-import { Standalone2Component, StandaloneComponent } from "@whoho/mylib";
-import { qwikify$ } from "~/angular-int/qwikify";
-// import { Internal } from "~/integrations/angular/components";
-import { Internal, StandaloneQwikified } from "~/integrations/angular/components";
-
-// @Component({
-//     selector: 'my-qwik-ng',
-//     standalone: true,
-//     imports: [StandaloneComponent, Standalone2Component],
-//     template: `
-//         HERE GOES 1:
-//         <app-standalone1></app-standalone1>
-//         HERE GOES 2:
-//         <app-standalone2></app-standalone2>
-//     `
-// })
-// export class  MyQwikNgComponent {
-    
-// }
-// // @ts-ignore
-// export const Internal = qwikify$(MyQwikNgComponent);
+import { Internal } from "~/integrations/angular/components";
 
 export default component$(() => {
 
     const contentOptionSig = useSignal<'one' | 'two'>('one');
-
-    useOnDocument("hello", $((data) => {
-        console.log('HELLO EMITTED', {data});
-    }));
 
     return (
         <div>
@@ -41,24 +16,12 @@ export default component$(() => {
             </h1>
 
             <div style="background-color: lightsteelblue">
-                <Internal client:hover/>
+                <Internal client:hover contentOption={contentOptionSig.value} hello2={$(() => console.log('hello handler'))}>
+                    <div id="meow">I am projected {contentOptionSig.value}</div>
+                </Internal>
             {/* <StandaloneQwikified contentOption={contentOptionSig.value} hello={$(() => console.log('hello handler'))}>
                 <div id="meow">I am projected {contentOptionSig.value}</div>
             </StandaloneQwikified> */}
-            {/* <br />
-            <Standalone2Qwikified client:only/>
-            <br />
-            <StandaloneQwikified client:only/> */}
-                {/* <app-standalone1></app-standalone1>
-                <br />
-                <app-standalone2></app-standalone2>
-                <br />
-                <button onClick$={$(() => _render(document.querySelector("app-standalone1")!, StandaloneComponent))}>
-                    render standalone1
-                </button>
-                <button onClick$={$(() => _render(document.querySelector("app-standalone2")!, Standalone2Component))}>
-                    render standalone2
-                </button> */}
             </div>
 
             <button onClick$={$(() => {

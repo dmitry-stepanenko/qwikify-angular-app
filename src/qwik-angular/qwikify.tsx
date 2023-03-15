@@ -12,17 +12,18 @@ import {
     useStylesScoped$,
 } from "@builder.io/qwik";
 import { isBrowser, isServer } from "@builder.io/qwik/build";
-import type {ɵComponentType as ComponentType} from '@angular/core';
+import type {Type} from '@angular/core';
 import { ClientRenderer } from "./client";
 import { getHostProps, useWakeupSignal } from "./slot";
 import type { Internal, QwikifyOptions, QwikifyProps } from "./types";
 import { renderFromServer } from "./server";
 
 export function qwikifyQrl<PROPS extends {}>(
-    angularCmp$: QRL<ComponentType<unknown>>,
+    angularCmp$: QRL<Type<unknown>>,
     opts?: QwikifyOptions,
     
 ) {
+  // TODO: check if provided angularCmp$ is a standalone angular component
     return component$<QwikifyProps<PROPS>>((props) => {
         useStylesScoped$( `q-slot:not([projected]){display:none}` ); 
         const hostRef = useSignal<Element>();
@@ -42,7 +43,6 @@ export function qwikifyQrl<PROPS extends {}>(
             if (!isBrowser) {
                 return;
             }
-            console.log({slotRef: slotRef.value, hostRef: hostRef.value});
 
             // Update
             if (internalState.value) {

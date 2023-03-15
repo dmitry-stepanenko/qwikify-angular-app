@@ -3,7 +3,6 @@ import { type QRL, type Signal, SSRRaw, Slot } from "@builder.io/qwik";
 import { isServer } from "@builder.io/qwik/build";
 import {
     reflectComponentType,
-    type ɵComponentType as ComponentType,
     ApplicationRef,
     type ComponentMirror,
     InjectionToken,
@@ -83,7 +82,7 @@ const STATIC_PROPS_HOOK_PROVIDER: Provider = {
 
 export async function renderFromServer(
     Host: any,
-    angularCmp$: QRL<ComponentType<unknown>>,
+    angularCmp$: QRL<Type<unknown>>,
     hostRef: Signal<Element | undefined>,
     slotRef: Signal<Element | undefined>,
     props: Record<string, unknown>

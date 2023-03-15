@@ -3,10 +3,10 @@ import {
     type EventEmitter,
     NgZone,
     reflectComponentType,
-    type ɵComponentType as ComponentType,
     type ApplicationRef,
     type ComponentRef,
     type ComponentMirror,
+    type Type,
 } from "@angular/core";
 import { createApplication } from "@angular/platform-browser";
 import { merge, Subject } from "rxjs";
@@ -28,7 +28,7 @@ export class ClientRenderer {
 
     private initialized = false;
 
-    constructor(private component: ComponentType<unknown>, private initialProps: Record<string, unknown>) {
+    constructor(private component: Type<unknown>, private initialProps: Record<string, unknown>) {
     }
 
     async render(hostElement: Element, slot: Element | undefined, props = this.initialProps) {

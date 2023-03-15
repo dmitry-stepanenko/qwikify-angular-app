@@ -1,28 +1,33 @@
-import { Component } from "@angular/core";
-import * as h  from "@whoho/mylib";
-import { qwikify$ } from "~/angular-int/qwikify";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import {Standalone2Component, StandaloneComponent}  from "@whoho/mylib";
+import { qwikify$ } from "~/qwik-angular/qwikify";
 // TODO: will be undefined if error?
 
 
 @Component({
     selector: 'my-qwik-ng',
     standalone: true,
-    imports: [h.StandaloneComponent, h.Standalone2Component],
+    imports: [StandaloneComponent, Standalone2Component],
     template: `
         HERE GOES 1:
-        <app-standalone1></app-standalone1>
+        <app-standalone1 [contentOption]="contentOption" (hello)="processHelloOutput($event)">
+            Projected from qwik angular component:
+            <ng-content></ng-content>
+        </app-standalone1>
         HERE GOES 2:
         <app-standalone2></app-standalone2>
     `
 })
-// @ts-ignore
 export class  MyQwikNgComponent {
-    
+    @Input() contentOption: 'one' | 'two' = 'two';
+
+    @Output() hello2 = new EventEmitter<string>();
+
+    processHelloOutput(greeting: string) {
+        this.hello2.emit(greeting)
+    }
 }
 
-// @ts-ignore
-export const Internal = qwikify$(MyQwikNgComponent);
-// export const Internal = qwikify$(h.Standalone2Component);
+export const Internal = qwikify$<{contentOption: 'one' | 'two', hello2?: () => any}>(MyQwikNgComponent);
 
-export const StandaloneQwikified = qwikify$<{contentOption: 'one' | 'two', hello?: () => any}>(h.StandaloneComponent);
-// export const Standalone2Qwikified = qwikify$(h.Standalone2Component);
+export const StandaloneQwikified = qwikify$<{contentOption: 'one' | 'two', hello?: () => any}>(StandaloneComponent);
