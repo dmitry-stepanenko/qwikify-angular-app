@@ -136,4 +136,5 @@ export async function renderFromServer(
         </>
     );
   }
+  return null;
 }

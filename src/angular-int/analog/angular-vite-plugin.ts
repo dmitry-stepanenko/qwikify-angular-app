@@ -9,13 +9,13 @@ import * as ts from 'typescript';
 import { ModuleNode, Plugin, PluginContainer, ViteDevServer } from 'vite';
 import { loadEsmModule } from '@angular-devkit/build-angular/src/utils/load-esm';
 import { createCompilerPlugin } from './compiler-plugin';
-// import {
-//   hasStyleUrls,
-//   hasTemplateUrl,
-//   resolveStyleUrls,
-//   resolveTemplateUrls,
-// } from './component-resolvers';
-// import { augmentHostWithResources } from './host';
+import {
+  hasStyleUrls,
+  hasTemplateUrl,
+  resolveStyleUrls,
+  resolveTemplateUrls,
+} from './component-resolvers';
+import { augmentHostWithResources } from './host';
 
 export interface PluginOptions {
   tsconfig?: string;
@@ -44,7 +44,7 @@ type FileEmitter = (file: string) => Promise<EmitFileResult | undefined>;
  * Ignore .tsx extensions
  */
 const TS_EXT_REGEX = /\.[cm]?ts[^x]?\??/;
-
+/** @deprecated */
 export function angular(options?: PluginOptions): Plugin[] {
   /**
    * Normalize plugin options so defaults
@@ -97,6 +97,7 @@ export function angular(options?: PluginOptions): Plugin[] {
   return [
     {
       name: '@analogjs/vite-plugin-angular',
+      enforce: 'pre',
       async config(config, { command }) {
         watchMode = command === 'serve';
         const target = Array.isArray(config.build?.target)
@@ -183,112 +184,127 @@ export function angular(options?: PluginOptions): Plugin[] {
 
         return ctx.modules;
       },
-    //   async transform(code, id) {
-    //     // Skip transforming node_modules
-    //     if (id.includes('node_modules')) {
-    //       return;
-    //     }
+      // @ts-ignore
+      async qwikAngularTransform(code: string, id: string) {
+        if (!id.includes('integrations/angular'))  {
+          return;
+        }
+        // @ts-ignore
+        const transformed = await this.transform1(code, id)
+        return transformed
+      },
+      // @ts-ignore
+      async transform1(code: string, id: string) {
+        // Skip transforming node_modules
+        if (id.includes('node_modules')) {
+          return;
+        }
 
-    //     /**
-    //      * Check for .ts extenstions for inline script files being
-    //      * transformed (Astro).
-    //      *
-    //      * Example ID:
-    //      *
-    //      * /src/pages/index.astro?astro&type=script&index=0&lang.ts
-    //      */
-    //     if (id.includes('type=script')) {
-    //       return;
-    //     }
+        if (!id.includes('integrations/angular')) {
+          return
+        }
 
-    //     if (TS_EXT_REGEX.test(id)) {
-    //       if (id.includes('.ts?')) {
-    //         // Strip the query string off the ID
-    //         // in case of a dynamically loaded file
-    //         id = id.replace(/\?(.*)/, '');
-    //       }
+        /**
+         * Check for .ts extenstions for inline script files being
+         * transformed (Astro).
+         *
+         * Example ID:
+         *
+         * /src/pages/index.astro?astro&type=script&index=0&lang.ts
+         */
+        if (id.includes('type=script')) {
+          return;
+        }
 
-    //       /**
-    //        * Re-analyze on each transform
-    //        * for test(Vitest)
-    //        */
-    //       if (isTest) {
-    //         const tsMod = viteServer?.moduleGraph.getModuleById(id);
-    //         if (tsMod) {
-    //           sourceFileCache.invalidate(id);
-    //           await buildAndAnalyze();
-    //         }
-    //       }
+        if (TS_EXT_REGEX.test(id)) {
+          if (id.includes('.ts?')) {
+            // Strip the query string off the ID
+            // in case of a dynamically loaded file
+            id = id.replace(/\?(.*)/, '');
+          }
 
-    //       if (watchMode) {
-    //         if (hasTemplateUrl(code)) {
-    //           const templateUrls = resolveTemplateUrls(code, id);
+          /**
+           * Re-analyze on each transform
+           * for test(Vitest)
+           */
+          if (isTest) {
+            const tsMod = viteServer?.moduleGraph.getModuleById(id);
+            if (tsMod) {
+              sourceFileCache.invalidate(id);
+              await buildAndAnalyze();
+            }
+          }
 
-    //           templateUrls.forEach((templateUrl) => {
-    //             this.addWatchFile(templateUrl);
-    //           });
-    //         }
+          if (watchMode) {
+            if (hasTemplateUrl(code)) {
+              const templateUrls = resolveTemplateUrls(code, id);
 
-    //         if (hasStyleUrls(code)) {
-    //           const styleUrls = resolveStyleUrls(code, id);
+              templateUrls.forEach((templateUrl) => {
+                // this.addWatchFile(templateUrl); // TODO
+              });
+            }
 
-    //           styleUrls.forEach((styleUrl) => {
-    //             this.addWatchFile(styleUrl);
-    //           });
-    //         }
-    //       }
+            if (hasStyleUrls(code)) {
+              const styleUrls = resolveStyleUrls(code, id);
 
-    //       const typescriptResult = await fileEmitter!(id);
+              styleUrls.forEach((styleUrl) => {
+                // this.addWatchFile(styleUrl);
+              });
+            }
+          }
 
-    //       // return fileEmitter
-    //       const data = typescriptResult?.content ?? '';
-    //       const forceAsyncTransformation =
-    //         /for\s+await\s*\(|async\s+function\s*\*/.test(data);
-    //       const useInputSourcemap = (!isProd ? undefined : false) as undefined;
+          const typescriptResult = await fileEmitter!(id);
 
-    //       if (!forceAsyncTransformation && !isProd) {
-    //         return {
-    //           code: isProd
-    //             ? data.replace(/^\/\/# sourceMappingURL=[^\r\n]*/gm, '')
-    //             : data,
-    //         };
-    //       }
+          // return fileEmitter
+          const data = typescriptResult?.content ?? '';
+          const forceAsyncTransformation =
+            /for\s+await\s*\(|async\s+function\s*\*/.test(data);
+          const useInputSourcemap = (!isProd ? undefined : false) as undefined;
 
-    //       const babelResult = await transformAsync(data, {
-    //         filename: id,
-    //         inputSourceMap: (useInputSourcemap
-    //           ? undefined
-    //           : false) as undefined,
-    //         sourceMaps: !isProd ? 'inline' : false,
-    //         compact: false,
-    //         configFile: false,
-    //         babelrc: false,
-    //         browserslistConfigFile: false,
-    //         plugins: [],
-    //         presets: [
-    //           [
-    //             angularApplicationPreset,
-    //             {
-    //               supportedBrowsers: pluginOptions.supportedBrowsers,
-    //               forceAsyncTransformation,
-    //               optimize: isProd && {},
-    //             },
-    //           ],
-    //         ],
-    //       });
+          if (!forceAsyncTransformation && !isProd) {
+            return {
+              code: isProd
+                ? data.replace(/^\/\/# sourceMappingURL=[^\r\n]*/gm, '')
+                : data,
+            };
+          }
 
-    //       return {
-    //         code: babelResult?.code ?? '',
-    //         map: babelResult?.map,
-    //       };
-    //     }
+          const babelResult = await transformAsync(data, {
+            filename: id,
+            inputSourceMap: (useInputSourcemap
+              ? undefined
+              : false) as undefined,
+            sourceMaps: !isProd ? 'inline' : false,
+            compact: false,
+            configFile: false,
+            babelrc: false,
+            browserslistConfigFile: false,
+            plugins: [],
+            presets: [
+              [
+                angularApplicationPreset,
+                {
+                  supportedBrowsers: pluginOptions.supportedBrowsers,
+                  forceAsyncTransformation,
+                  optimize: isProd && {},
+                },
+              ],
+            ],
+          });
 
-    //     return undefined;
-    //   },
+          return {
+            code: babelResult?.code ?? '',
+            map: babelResult?.map,
+          };
+        }
+
+        return undefined;
+      },
     },
     {
       name: '@analogjs/vite-plugin-angular-optimizer',
       apply: 'build',
+      enforce: 'pre',
       config() {
         return {
           esbuild: {
@@ -302,6 +318,7 @@ export function angular(options?: PluginOptions): Plugin[] {
                 }
               : undefined,
             supported: {
+              // TODO
               // Native async/await is not supported with Zone.js. Disabling support here will cause
               // esbuild to downlevel async/await to a Zone.js supported form.
               'async-await': false,

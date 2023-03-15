@@ -1,9 +1,30 @@
 /* eslint-disable */
 
+import { Component } from "@angular/core";
 import { $, component$, useOnDocument, useSignal } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
-import { StandaloneQwikified } from "~/angular/components";
+import { Standalone2Component, StandaloneComponent } from "@whoho/mylib";
+import { qwikify$ } from "~/angular-int/qwikify";
+// import { Internal } from "~/integrations/angular/components";
+import { Internal, StandaloneQwikified } from "~/integrations/angular/components";
+
+// @Component({
+//     selector: 'my-qwik-ng',
+//     standalone: true,
+//     imports: [StandaloneComponent, Standalone2Component],
+//     template: `
+//         HERE GOES 1:
+//         <app-standalone1></app-standalone1>
+//         HERE GOES 2:
+//         <app-standalone2></app-standalone2>
+//     `
+// })
+// export class  MyQwikNgComponent {
+    
+// }
+// // @ts-ignore
+// export const Internal = qwikify$(MyQwikNgComponent);
 
 export default component$(() => {
 
@@ -20,9 +41,10 @@ export default component$(() => {
             </h1>
 
             <div style="background-color: lightsteelblue">
-            <StandaloneQwikified contentOption={contentOptionSig.value} hello={$(() => console.log('hello handler'))}>
+                <Internal client:hover/>
+            {/* <StandaloneQwikified contentOption={contentOptionSig.value} hello={$(() => console.log('hello handler'))}>
                 <div id="meow">I am projected {contentOptionSig.value}</div>
-            </StandaloneQwikified>
+            </StandaloneQwikified> */}
             {/* <br />
             <Standalone2Qwikified client:only/>
             <br />
