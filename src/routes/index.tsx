@@ -1,17 +1,13 @@
 /* eslint-disable */
 
-import { $, component$, useOnDocument, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
-import { StandaloneQwikified } from "~/angular/components";
+import { Internal } from "~/integrations/angular/components";
 
 export default component$(() => {
 
     const contentOptionSig = useSignal<'one' | 'two'>('one');
-
-    useOnDocument("hello", $((data) => {
-        console.log('HELLO EMITTED', {data});
-    }));
 
     return (
         <div>
@@ -20,23 +16,12 @@ export default component$(() => {
             </h1>
 
             <div style="background-color: lightsteelblue">
-            <StandaloneQwikified contentOption={contentOptionSig.value} hello={$(() => console.log('hello handler'))}>
+                <Internal client:hover contentOption={contentOptionSig.value} hello2={$(() => console.log('hello handler'))}>
+                    <div id="meow">I am projected {contentOptionSig.value}</div>
+                </Internal>
+            {/* <StandaloneQwikified contentOption={contentOptionSig.value} hello={$(() => console.log('hello handler'))}>
                 <div id="meow">I am projected {contentOptionSig.value}</div>
-            </StandaloneQwikified>
-            {/* <br />
-            <Standalone2Qwikified client:only/>
-            <br />
-            <StandaloneQwikified client:only/> */}
-                {/* <app-standalone1></app-standalone1>
-                <br />
-                <app-standalone2></app-standalone2>
-                <br />
-                <button onClick$={$(() => _render(document.querySelector("app-standalone1")!, StandaloneComponent))}>
-                    render standalone1
-                </button>
-                <button onClick$={$(() => _render(document.querySelector("app-standalone2")!, Standalone2Component))}>
-                    render standalone2
-                </button> */}
+            </StandaloneQwikified> */}
             </div>
 
             <button onClick$={$(() => {

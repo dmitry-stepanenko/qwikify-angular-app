@@ -15,12 +15,31 @@
     "incremental": true,
     "isolatedModules": true,
     "outDir": "tmp",
-    "noEmit": true,
+    "noEmit": false,
     "types": ["node", "vite/client"],
     "paths": {
       "~/*": ["./src/*"]
-    }
-  },
+    },
+    // added
+      "baseUrl": "./",
+      "noImplicitOverride": true,
+      "noPropertyAccessFromIndexSignature": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "sourceMap": true,
+      "declaration": false,
+      "downlevelIteration": true,
+      "experimentalDecorators": true,
+      "importHelpers": true,
+      "useDefineForClassFields": false
+    },
+    "angularCompilerOptions": {
+      "enableI18nLegacyMessageIdFormat": false,
+      "strictInjectionParameters": true,
+      "strictInputAccessModifiers": true,
+      "strictTemplates": true
+    },
+    //
   "files": ["./.eslintrc.cjs"],
   "include": ["src"]
 }

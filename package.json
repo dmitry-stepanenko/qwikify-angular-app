@@ -25,9 +25,10 @@
     "@angular/core": "^15.1.3",
     "@angular/platform-browser": "^15.1.3",
     "@angular/platform-browser-dynamic": "^15.1.3",
-    "@whoho/mylib": "/Users/dmitriy/projects/test/qwikng/packages-ng/dist/packages/whoho-mylib-0.0.7.tgz"
+    "@whoho/mylib": "/Users/dmitriy/projects/test/qwikng/qwik-true-clean-app/npm-deps/whoho-mylib-0.0.7.tgz"
   },
   "devDependencies": {
+    "@analogjs/platform": "^0.1.0-beta.18",
     "@angular-devkit/build-angular": "^15.1.4",
     "@angular/compiler": "^15.1.3",
     "@angular/compiler-cli": "^15.1.3",
@@ -36,7 +37,7 @@
     "@angular/platform-browser": "^15.1.3",
     "@angular/platform-server": "^15.1.3",
     "@babel/core": "^7.21.0",
-    "@builder.io/qwik": "0.21.0",
+    "@builder.io/qwik": "/Users/dmitriy/projects/test/qwikng/qwik-true-clean-app/npm-deps/builder.io-qwik-0.20.2-dev20230315180706.tgz",
     "@builder.io/qwik-city": "0.5.3",
     "@ngtools/webpack": "^15.2.2",
     "@types/babel__core": "^7.20.0",

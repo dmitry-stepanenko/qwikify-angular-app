@@ -12,3 +12,4 @@ Other:
 - no event after navigating to another page and back? (qwik issue)
 - is it ok to attach zone.js globally? 
 - EventEmitter: CustomEvent vs functional handlers approach? both supported now, leave one)
+- no esbuild async/await support
