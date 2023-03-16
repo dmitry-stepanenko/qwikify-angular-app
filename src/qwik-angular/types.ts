@@ -1,7 +1,5 @@
 import type { PropFunction, Signal } from '@builder.io/qwik';
 import type { ClientRenderer } from './client';
-// import type { FunctionComponent } from 'react';
-// import type { Root } from 'react-dom/client';
 
 export interface Internal {
   renderer: ClientRenderer
@@ -58,26 +56,24 @@ export interface QwikifyBase {
   'client:event'?: string | string[];
 
   /**
-   * Adds a `click` event listener to the host element, this event will be dispatched even if the react component is not hydrated.
+   * Adds a `click` event listener to the host element, this event will be dispatched even if the component is not hydrated.
    */
   'host:onClick$'?: PropFunction<(ev: Event) => void>;
 
   /**
-   * Adds a `blur` event listener to the host element, this event will be dispatched even if the react component is not hydrated.
+   * Adds a `blur` event listener to the host element, this event will be dispatched even if the component is not hydrated.
    */
   'host:onBlur$'?: PropFunction<(ev: Event) => void>;
 
   /**
-   * Adds a `focus` event listener to the host element, this event will be dispatched even if the react component is not hydrated.
+   * Adds a `focus` event listener to the host element, this event will be dispatched even if the component is not hydrated.
    */
   'host:onFocus$'?: PropFunction<(ev: Event) => void>;
 
   /**
-   * Adds a `mouseover` event listener to the host element, this event will be dispatched even if the react component is not hydrated.
+   * Adds a `mouseover` event listener to the host element, this event will be dispatched even if the component is not hydrated.
    */
   'host:onMouseOver$'?: PropFunction<(ev: Event) => void>;
-
-  children?: any;
 }
 
 export type TransformProps<PROPS extends {}> = {
