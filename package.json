@@ -37,7 +37,7 @@
     "@angular/platform-browser": "^15.1.3",
     "@angular/platform-server": "^15.1.3",
     "@babel/core": "^7.21.0",
-    "@builder.io/qwik": "/Users/dmitriy/projects/test/qwikng/qwik-true-clean-app/npm-deps/builder.io-qwik-0.20.2-dev20230315180706.tgz",
+    "@builder.io/qwik": "/Users/dmitriy/projects/test/qwikng/qwik-true-clean-app/npm-deps/builder.io-qwik-0.20.2-dev20230321125515.tgz",
     "@builder.io/qwik-city": "0.5.3",
     "@ngtools/webpack": "^15.2.2",
     "@types/babel__core": "^7.20.0",

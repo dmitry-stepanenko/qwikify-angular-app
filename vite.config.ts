@@ -6,7 +6,11 @@ import { angular } from './src/qwik-angular/analog-angular';
 
 export default defineConfig(() => {
   return {
-    plugins: [qwikCity(), qwikVite(), tsconfigPaths(), angular({tsconfig: './tsconfig.json'})],
+    plugins: [qwikCity(), qwikVite(), tsconfigPaths(),
+      angular({
+        tsconfig: './tsconfig.json', 
+        componentsDir: 'integrations/angular'
+    })],
     preview: {
       headers: {
         'Cache-Control': 'public, max-age=600',
